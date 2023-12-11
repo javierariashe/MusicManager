@@ -1,6 +1,7 @@
 # MusicManager
-EDA II Proyecto
-Javier Arias Hernández and Carina Mireles Rubio
+EDA II Proyecto\
+Javier Arias Hernández and Carina Mireles Rubio\
+M.C. Jorge Alberto Solano Gálvez
 
 ---
 
