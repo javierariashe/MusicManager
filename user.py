@@ -4,7 +4,6 @@ from playlist import *
 
 root_path = os.getcwd() + "\\Users\\"
 
-
 class User:
     
     def __init__(self, name, password, number):
@@ -39,7 +38,6 @@ class User:
             playlist_path = path + "\\" + playlist
             playlists.append(readPlaylistCsv(playlist_path, users))
         self.playlists = playlists
-
 
 def createUser(name, password):
     with open(root_path + 'users.csv', 'r') as file:
@@ -82,16 +80,14 @@ def login(users):
 
 
 def signUp(users):
-    name = input("Ingresa tu nombre de usuario: ")
+    name = input("Crea tu nombre de usuario: ")
+    newUser = None
     if users.search(users.root, name) is None:
-        password = input("Ingresa tu contraseña: ")
+        password = input("Crea tu contraseña: ")
         newUser = createUser(name, password)
-        return newUser
-
     else:
         print("Nombre de usuario no disponible")
-        return None
-
+    return newUser
 
 def readUsersCsv():
     users = BT()
@@ -102,3 +98,32 @@ def readUsersCsv():
             users.insert(users.root, NodeTree(row[0], User(row[0], row[1], row[2])))
             line += 1
     return users
+
+def myProfile(user):
+    while True:
+        print("\nTu perfil:")
+        user.profile()
+        print("1) Ver seguidores")
+        print("2) Ver seguidos")
+        print("3) Salir")
+        try:
+            option = int(input())
+            if option == 1:
+                seeFollowers(user)
+            elif option == 2:
+                seeFollowing(user)
+            elif option == 3:
+                break
+            else:
+                raise ValueError
+        except ValueError:
+            print("Por favor, introduce un número válido.")
+
+
+def seeFollowing(user):
+    for userFollowing in user.following:
+        print(userFollowing.name)
+
+def seeFollowers(user):
+    for userFollower in user.followers:
+        print(userFollower.name)

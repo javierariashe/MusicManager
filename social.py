@@ -3,7 +3,6 @@ from graph import *
 
 root_path = os.getcwd()
 
-
 def social(user, usersGraph, users):
     while True:
         print("\nSocial")
@@ -12,24 +11,25 @@ def social(user, usersGraph, users):
         print("3. Explorar")
         print("4. Regresar")
         try:
-            op = int(input())
-            match op:
-                case 1:
-                    if user.following:
-                        for follow in user.following:
-                            print(follow.name)
-                    else:
-                        print("No se encontraron usuarios")
-                case 2:
-                    if user.followers:
-                        for follower in user.followers:
-                            print(follower.name)
-                    else:
-                        print("No se encontraron usuarios")
-                case 3:
-                    explore(user, usersGraph, users)
-            if op == 4:
+            option = int(input())
+            if option == 1:
+                if user.following:
+                    for follow in user.following:
+                        print(follow.name)
+                else:
+                    print("No se encontraron usuarios")
+            elif option == 2:
+                if user.followers:
+                    for follower in user.followers:
+                        print(follower.name)
+                else:
+                    print("No se encontraron usuarios")
+            elif option == 3:
+                explore(user, usersGraph, users)
+            elif option == 4:
                 break     
+            else:
+                raise ValueError
         except ValueError:
             print("Por favor, introduce un número válido.")
 
@@ -44,12 +44,13 @@ def explore(user, usersGraph, users):
         print("1. Buscar")
         print("2. Regresar")
         try:
-            op1 = int(input())
-            match op1:
-                case 1:
+            option = int(input())
+            if option == 1:
                     search(user, usersGraph, users)
-            if op1 == 2:
+            elif option == 2:
                 break
+            else:
+                raise ValueError
         except ValueError:
             print("Por favor, introduce un número válido.")
         
@@ -62,39 +63,45 @@ def searchUser(users):
 
 def search(user, usersGraph, users):
     searchedUser = searchUser(users)
-    if searchedUser is not None:
+    if searchedUser is None:
+        print("El usuario no ha sido encontrado")
+    else:
         searchedUser.profile()
         while True:
             print("\n1. Seguir a ", searchedUser.name)
             print("2. Ver playlists de ", searchedUser.name)
             print("3. Salir")
             try:
-                op2 = int(input())
-                match op2:
-                    case 1:
-                        if user in searchedUser.followers:
-                            print("Ya sigues a este usuario")
-                        else:
-                            usersGraph = Graph(usersGraph.numNodes, usersGraph.numEdges+1)
-                            usersGraph.insert_edge(user, searchedUser)
-                            usersGraph.read_edges(users)
-                            addFriend(user, searchedUser)
-                            searchedUser.followers.append(user)
-                    case 2:
-                        if user in searchedUser.followers:
-                            playlistSearchedUser(searchedUser)
-                        else:
-                            print("Debes de seguir a esta usuario para ver sus playlist")
-                if op2 == 3:
+                option = int(input())
+                if option == 1:
+                    if user in searchedUser.followers:
+                        print("Ya sigues a este usuario")
+                    else:
+                        follow(user, usersGraph, users)
+                elif option == 2:
+                    if user in searchedUser.followers:
+                        playlistSearchedUser(searchedUser)
+                    else:
+                        print("Debes de seguir a esta usuario para ver sus playlist")
+                elif option == 3:
                     break
+                else:
+                    raise ValueError
             except ValueError:
                 print("Por favor, introduce un número válido.")
-    else:
-        print("El usuario no ha sido encontrado")
+
+def follow(user, usersGraph, users):
+    usersGraph = Graph(usersGraph.numNodes, usersGraph.numEdges+1)
+    usersGraph.insert_edge(user, searchedUser)
+    usersGraph.read_edges(users)
+    addFriend(user, searchedUser)
+    searchedUser.followers.append(user)
 
 
 def playlistSearchedUser(searchedUser):
-    if searchedUser.playlists:
+    if not searchedUser.playlists:
+        print("El usuario no tiene playlists guardadas.")
+    else:
         i = 1
         for playlist in searchedUser.playlists:
             print(i, ". ", playlist)
@@ -113,8 +120,6 @@ def playlistSearchedUser(searchedUser):
                     break
             except ValueError:
                 print("Por favor, introduce un número válido.")
-    else:
-        print("El usuario no tiene playlists guardadas.")
 
 
 def addFriend(user, searchedUser):

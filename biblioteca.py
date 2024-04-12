@@ -11,40 +11,43 @@ def tu_biblioteca(user, artists, new_path):
         print("3. Agregar canciones")
         print("4. Regresar")
         try:
-            op = int(input())
-            match op:
-                case 1:
-                    show_artist(user, artists)
-                case 2:
-                    playlists(user)
-                case 3:
-                    add_songs(user, new_path)
-                    artists = read_artist_csv(user)
-            if op == 4:
+            option = int(input())
+            if option == 1:
+                show_artist(user, artists)
+            elif option == 2:
+                playlists(user)
+            elif option == 3:
+                add_songs(user, new_path)
+                artists = read_artist_csv(user)
+            elif op == 4:
                 break
+            else:
+                raise ValueError
         except ValueError:
             print("Por favor, introduce un número válido.")
 
 
 def show_artist(user, artists):
     artist_name = str(input("Ingrese el nombre del artista: "))
-    artista = artists.search(artists.root, artist_name)
-    if artista is not None:
-        op = 0
-        while op != 2:
+    artist = artists.search(artists.root, artist_name)
+    if artist is not None:
+        while True:
             print("\n1. Ver canciones")
             print("2. Regresar")
             try:
-                op = int(input())
-                match op:
-                    case 1:
-                        song = show_songs(artista)
-                        if song is not None:
-                            add_to_playlist(user, song)
+                option = int(input())
+                if option == 1:
+                    song = show_songs(artist)
+                    if song is not None:
+                        add_to_playlist(user, song)
+                elif option == 2:
+                    break
+                else:
+                    raise ValueError
             except ValueError:
                 print("Por favor, introduce un número válido.")
     else:
-        print("El artista ingresado no esta agregado en tu biblioteca")
+        print("El artista no esta en tu biblioteca")
 
 
 def show_songs(artista):
@@ -53,13 +56,12 @@ def show_songs(artista):
     for song in artista.songs:
         print(i, ". ", song.name)
         i += 1
-    op = 0
-    while op != 2:
+    while True:
         print("\n1. Seleccionar cancion")
         print("2. Regresar")
         try:
-            op = int(input())
-            if op == 1:
+            option = int(input())
+            if option == 1:
                 song = select_song(artista.songs)
                 if song is not None:
                     return song
@@ -67,6 +69,8 @@ def show_songs(artista):
                     return None
             elif op == 2:
                 return None
+            else:
+                raise ValueError
 
         except ValueError:
             print("Por favor, introduce un número válido.")
@@ -87,17 +91,18 @@ def add_to_playlist(user, song):
     print("\n1. Agregar cancion a playlist")
     print("2. Regresar")
     try:
-        op = int(input())
-        match op:
-            case 1:
-                i = 1
-                for playlist in user.playlists:
-                    print(str(i) + ". " + playlist.name)
-                    i += 1
-                n_playlist = int(input("Ingrese el numero de la playlist a la que desea agregar la cancion: "))
-                playlist = user.playlists[n_playlist - 1]
-                playlist.addSong(song)
-                print("Cancion agregada correctamente.")
+        option = int(input())
+        if option == 1:
+            i = 1
+            for playlist in user.playlists:
+                print(str(i) + ". " + playlist.name)
+                i += 1
+            n_playlist = int(input("Ingrese el numero de la playlist a la que desea agregar la cancion: "))
+            playlist = user.playlists[n_playlist - 1]
+            playlist.addSong(song)
+            print("Cancion agregada correctamente.")
+        elif option != 2:
+            raise ValueError
     except ValueError:
         print("Por favor, introduce un número válido.")
 
@@ -111,38 +116,17 @@ def playlists(user):
             i += 1
         print("\n1. Ver playlist")
         print("2. Agregar playlist")
-        print("3. Buscar cancion en playlist")
-        print("4. Regresar")
+        print("3. Regresar")
         try:
-            op = int(input())
-            match op:
-                case 1:
-                    if user.playlists:
-                        n_playlist = int(input("Ingrese el numero de la playlist que quiere ver: "))
-                        playlist = user.playlists[n_playlist - 1]
-                        if playlist.songs:
-                            sort_playlist(playlist)
-                            show_songs(playlist)
-                        else:
-                            print("La lista esta vacia.")
-                    else:
-                        print("No hay playlists guardadas.")
-                case 2:
-                    name = input("Ingrese el nombre de la playlist: ")
-                    new_playlist = Playlist(name, user)
-                    new_playlist.createPlaylistCsv()
-                    print("La playlist " + name + " ha sido creada correctamente.")
-                case 3:
-                    n_playlist = int(input("Ingrese el numero de la playlist en la que quiere buscar: "))
-                    playlist = user.playlists[n_playlist - 1]
-                    searching = str(input("Buscar: "))
-                    searched_song = search(playlist.songs, searching)
-                    if searched_song != -1:
-                        print("La cancion se encuentra en la playlist.")
-                    else:
-                        print("La cancion no se encuentra en la playlist")
-            if op == 4:
+            option = int(input())
+            if option == 1:
+                seePlaylist(user)
+            elif option == 2:
+                createPlaylist(user)
+            elif option == 3:
                 break
+            else:
+                raise ValueError
         except ValueError:
             print("Por favor, introduce un número válido.")
 
@@ -153,14 +137,15 @@ def sort_playlist(playlist):
     print("2. Nombre")
     print("3. Año")
     try:
-        op = int(input())
-        match op:
-            case 1:
-                playlist.playlistSort("artist")
-            case 2:
-                playlist.playlistSort("name")
-            case 3:
-                playlist.playlistSort("year")
+        option = int(input())
+        if option == 1:
+            playlist.playlistSort("artist")
+        elif option == 2:
+            playlist.playlistSort("name")
+        elif option == 3:
+            playlist.playlistSort("year")
+        else:
+            raise ValueError
     except ValueError:
         print("Por favor, introduce un número válido.")
 

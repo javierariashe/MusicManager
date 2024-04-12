@@ -54,6 +54,23 @@ class Playlist:
     def __str__(self):
         return "Playlist: " + self.name + "\tUsuario: " + self.user.name
 
+def seePlaylist(user):
+    if user.playlists:
+        n_playlist = int(input("Ingrese el numero de la playlist que quiere ver: "))
+        playlist = user.playlists[n_playlist - 1]
+        if playlist.songs:
+            sort_playlist(playlist)
+            show_songs(playlist)
+        else:
+            print("La lista esta vacia.")
+    else:
+        print("No hay playlists guardadas.")
+
+def createPlaylist(user):
+    name = input("Ingrese el nombre de la playlist: ")
+    new_playlist = Playlist(name, user)
+    new_playlist.createPlaylistCsv()
+    print("La playlist " + name + " ha sido creada correctamente.")
 
 def readPlaylistCsv(path, users):
     with open(path) as csv_file:
